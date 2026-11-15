@@ -85,7 +85,7 @@ Host vps-bot
 
 | Accès | Clé de `vps-claude` autorisée ? |
 |---|---|
-| `vps-claude` → `ovh` | ❓ à vérifier : `ssh ovh ls` |
+| `vps-claude` → `ovh` | ✅ depuis le 15/11/2026 (clé `serveur-claude` dans `~/.ssh/authorized_keys` du mutualisé ; alias `Host ovh` en place) |
 | `vps-claude` → `vps-apps` | ❓ |
 
 ## Accès depuis le PC Windows de l'utilisateur
