@@ -8,21 +8,51 @@ Légende : ✅ confirmé par l'utilisateur · 🔎 déduit d'une session précé
 | Nom court | Fournisseur | Adresse | Utilisateur SSH | Rôle | Statut |
 |---|---|---|---|---|---|
 | `vps-claude` | Infomaniak | `200.234.64.136` | `claude` 🔎 | Claude Code : sessions lancées par `claude remote-control`, dans `tmux` | ✅ fournisseur, 🔎 rôle |
-| `vps-bot` | Infomaniak | ❓ | ❓ | Bot eToro **uniquement** | ✅ rôle |
-| `vps-apps` | OVH | `37.187.37.163` | ❓ | Coolify (Docker) : **Matrice** | ✅ adresse, 🔎 Matrice seule |
+| `vps-bot` | Infomaniak | `179.237.64.74` | ❓ | Bot eToro **uniquement** | ✅ |
+| `vps-apps` | OVH | `37.187.37.163` | ❓ | Coolify (Docker), interface `https://coolify.auto-events.fr` : Matrice, Jean Mich, eventsquiz (test) | ✅ |
 | `ovh-mutu` | OVH, mutualisé | `ssh.cluster100.hosting.ovh.net:22` | login FTP principal ❓ | Apps PHP/MySQL, une par dossier et sous-domaine | ✅ |
 | GitHub | — | compte `edouardsineux-web` | — | Code source de toutes les apps, et ce dépôt `infra` | ✅ |
 
 ## Apps
 
-| App | Pro / perso | Hébergement | Mise en ligne | Dépôt GitHub | Statut |
+### Sur `vps-apps` (Coolify)
+
+| App | Pro / perso | Adresse | Dépôt GitHub | Statut |
+|---|---|---|---|---|
+| Matrice | pro | ❓ | `edouardsineux-web/matrice` | ✅ |
+| Jean Mich | ❓ | ❓ | ❓ | ✅ hébergement |
+| eventsquiz, version test | pro | `test.eventsquiz.fr` | ❓ | ✅ |
+
+Mise en ligne : par Coolify (depuis GitHub ou l'interface). Une session cloud ne peut pas ouvrir Coolify.
+
+### Sur `ovh-mutu` (multisite OVH : un dossier racine par site)
+
+| Site (nom OVH) | Dossier racine | Domaines | App | Pro / perso | Statut |
 |---|---|---|---|---|---|
-| Matrice | pro | `vps-apps` (Coolify) | Coolify | ❓ | ✅ |
-| Keytrace | pro | `ovh-mutu` | SFTP/SSH vers son dossier | ❓ | ✅ « sur le mutualisé » |
-| eventsquiz | pro | `ovh-mutu` | SFTP/SSH vers son dossier | ❓ | ✅ |
-| QR générateur | pro | `ovh-mutu` | SFTP/SSH vers son dossier | ❓ | ✅ |
-| Bocconi Test Prep | **perso** | `ovh-mutu`, propre sous-domaine et dossier | ZIP + SFTP/SSH vers son dossier, puis `install/migrate.php` et `admin/import.php` (voir `UPGRADE.md` du dépôt) | `edouardsineux-web/Bocconitest` | ✅ |
-| Bot eToro | **perso** | `vps-bot` | ❓ | ❓ | ✅ |
+| Website-Bocconi | `Bocconi` | 1 | Bocconi Test Prep | **perso** | ✅ |
+| Website-Keytrace | `Keytrace` | 1 | Keytrace | pro | ✅ |
+| Website-quiz | `quiz` | 2 | eventsquiz (production, 🔎) | pro | ✅ dossier, 🔎 app |
+| Website-qr | `qr` | 1 | QR générateur (🔎) | pro | ✅ dossier, 🔎 app |
+| Quiz BMW | `BMWQuiz` | 1 | Quiz BMW | ❓ | ✅ dossier |
+| NSH | `sitensh` | 1 | site NSH | ❓ | ✅ dossier |
+| Website-test | `test` | 1 | site de test | ❓ | ✅ dossier |
+| Website-tools | `tools` | 1 | outils | ❓ | ✅ dossier |
+| Website-www | `www` | 1 | site principal | ❓ | ✅ dossier |
+| Website-fisca | `fisca` | 2 | fisca | ❓ | ✅ dossier |
+
+Chemins : relatifs à la racine du compte (`~/<dossier>`, à vérifier par `ssh ovh ls`). La colonne « Inactif » de l'espace client concerne Git / pare-feu / CDN, pas le site lui-même. Domaines exacts : ❓ (onglet Multisite).
+
+Bocconi : mise en ligne par ZIP + SFTP/SSH vers `Bocconi/` uniquement, puis `install/migrate.php` et `admin/import.php` (voir `UPGRADE.md` du dépôt `Bocconitest`).
+
+### Sur `vps-bot`
+
+| App | Pro / perso | Dépôt GitHub | Statut |
+|---|---|---|---|
+| Bot eToro | **perso** | `edouardsineux-web/etoro-bot` | ✅ |
+
+### Dépôts GitHub connus
+
+`infra`, `Bocconitest`, `etoro-bot`, `matrice`. Les autres apps (Keytrace, eventsquiz, QR, Jean Mich…) ne semblent pas avoir de dépôt sur ce compte : ❓.
 
 ## Règles
 
@@ -48,6 +78,9 @@ Host ovh
 Host vps-apps
     HostName 37.187.37.163
     User <utilisateur>
+Host vps-bot
+    HostName 179.237.64.74
+    User <utilisateur>
 ```
 
 | Accès | Clé de `vps-claude` autorisée ? |
@@ -62,7 +95,8 @@ Host vps-apps
 
 ## À compléter
 
-1. Adresse et utilisateur de `vps-bot`.
-2. Utilisateur SSH de `vps-apps` ; vérifier dans Coolify que **seule Matrice** y tourne.
-3. Login SSH du mutualisé, et nom du dossier de chaque app sous `~/www/`.
-4. Noms des dépôts GitHub des autres apps.
+1. Utilisateurs SSH de `vps-apps` et `vps-bot`.
+2. Login SSH du mutualisé (login FTP principal, onglet FTP-SSH de l'espace client).
+3. Pro ou perso : Jean Mich, Quiz BMW, NSH, tools, www, fisca, test.
+4. Confirmer : dossier `quiz` = eventsquiz en production ; dossier `qr` = QR générateur.
+5. Dépôts GitHub des apps qui n'en ont pas encore (facultatif).
