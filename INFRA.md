@@ -1,6 +1,6 @@
 # Carte de l'infrastructure (à lire en début de session)
 
-Dernière mise à jour : 15/11/2026. Ne contient **aucun secret** (pas de mot de passe, de clé ni de jeton) : seulement des adresses, des rôles et des noms d'utilisateur.
+Dernière mise à jour : 16/11/2026. Ne contient **aucun secret** (pas de mot de passe, de clé ni de jeton) : seulement des adresses, des rôles et des noms d'utilisateur.
 Légende : ✅ confirmé par l'utilisateur · 🔎 déduit d'une session précédente, à confirmer · ❓ inconnu.
 
 ## Machines
@@ -66,6 +66,23 @@ Bocconi : mise en ligne par ZIP + SFTP/SSH vers `Bocconi/` uniquement, puis `ins
 - **Sessions cloud** (claude.ai, app Claude Code, « environment: anthropic_cloud ») : accès à GitHub uniquement. Elles ne peuvent joindre **ni** les VPS **ni** le mutualisé (pas d'accès SSH ; le réseau n'autorise pas les adresses IP). Elles codent, testent et poussent sur GitHub.
 - **Sessions lancées sur `vps-claude`** (`claude remote-control`, environment « bridge ») : elles tournent sur le VPS et peuvent se connecter en SSH aux autres machines si la clé de `vps-claude` y est autorisée. **Ce sont elles qui mettent en ligne.**
 - **Coolify** : interface web sur `vps-apps` ; une session cloud ne peut pas l'ouvrir.
+- Le type d'une session dépend de **l'endroit où on l'ouvre**, pas de l'app : ouverte depuis un dépôt GitHub dans claude.ai ou l'app → Cloud ; ouverte via `claude remote-control` lancé sur le VPS → Remote Control. Un `claude` lancé sur le VPS sans `remote-control` n'apparaît pas dans l'app.
+
+## État réel sur `vps-claude` (relevé le 16/11/2026)
+
+La règle « une session `claude remote-control` par app, dans `~/apps/pro/` ou `~/apps/perso/` » est la **cible**. Migration en cours : seul Bocconi y est.
+
+| App | Dossier sur `vps-claude` | Ce qui tourne (tmux) | Type de session visible dans l'app | Conforme ? |
+|---|---|---|---|---|
+| Bocconi (perso) | `~/apps/perso/bocconi-prep` | `claude remote-control` (tmux `bocconi`) | Remote Control | ✅ |
+| Matrice (pro) | `~/matrice` | `claude --continue` **sans** remote-control (tmux `matrice`) | Cloud (sessions ouvertes depuis le dépôt GitHub) | ❌ à déplacer dans `~/apps/pro/` |
+| eventsquiz (pro) | `~/eventsquiz` | rien | ancienne session Remote Control | ❌ à déplacer dans `~/apps/pro/` |
+| Bot eToro (perso) | `~/etoro-bot` | rien | — | ❌ à déplacer dans `~/apps/perso/` |
+| infra | `~/apps/infra` | — | — | ✅ |
+
+Autres : `~/historique-pc/` (rôle ❓) ; tmux `claude` = un `claude` lancé dans `~`, sans remote-control. `~/apps/pro/` n'existe pas encore.
+
+À faire, **depuis une session pro** pour Matrice et eventsquiz (pas depuis une session perso) : déplacer le dossier dans `~/apps/pro/<app>`, puis lancer `claude remote-control` dedans, dans un tmux à son nom.
 
 ## Accès SSH depuis `vps-claude` (à mettre en place une fois)
 
